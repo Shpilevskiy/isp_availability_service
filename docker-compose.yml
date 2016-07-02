@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+  redis:
+    image: redis
+  db:
+    image: postgres:9.4.4
+    ports:
+      - "5432:5432"
+  messageq:
+    image: rabbitmq
