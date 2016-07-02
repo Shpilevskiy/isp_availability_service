@@ -9,3 +9,13 @@ services:
       - "5432:5432"
   messageq:
     image: rabbitmq
+
+  falcon_service:
+    build: falcon_microservice
+    volumes: 
+      - ./falcon_microservice:/api
+    ports:
+      - "8080:8000"
+    links:
+      - db
+
