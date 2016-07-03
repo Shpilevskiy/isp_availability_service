@@ -26,9 +26,9 @@ services:
     links:
       - redis
       - db
-      - messageq
+      - messagequeue
     depends_on:
       - redis
       - db
-      - messageq   
+      - messagequeue   
 
