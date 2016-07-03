@@ -7,7 +7,7 @@ services:
     image: postgres:9.4.4
     ports:
       - "5432:5432"
-  messageq:
+  messagequeue:
     image: rabbitmq
 
   falcon_service:
@@ -21,8 +21,8 @@ services:
 
   parsing_service:
     build: parser_routines
-    volumes:
-      - ./parser_routines/:/app/parser_routines
+    # volumes:
+    #   - ./parser_routines/:/app/parser_routines
     links:
       - redis
       - db
