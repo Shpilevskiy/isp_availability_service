@@ -1,0 +1,22 @@
+{
+  "name": "isp_avalibality_service",
+  "homepage": "",
+  "authors": [
+    "MrLokans <mrlokans@gmail.com> Shpilevskiy<shpilevskiy.n@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  }
+}
