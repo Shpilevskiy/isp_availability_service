@@ -89,3 +89,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Front-end stuff
+bower_components/
+node_modules/
