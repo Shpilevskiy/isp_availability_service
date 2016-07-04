@@ -16,11 +16,13 @@
             <div class="row">
                 <form role="form">
                     <div class="col-md-3  ">
-                        <input type="text" class="form-control input-lg"  placeholder="Город">
+                        <input type="text" class="form-control input-lg" list="city-datalist" id="city-input" placeholder="Город">
+                        <datalist id="city-datalist"></datalist>
                     </div>
                     <div class="col-md-9 input-group ">
                         <span class="input-group-btn">
-                            <input type="text" class="form-control input-lg"  placeholder="Улица">
+                            <input type="text" class="form-control input-lg" list="street-datalist"  id="street-input" placeholder="Улица">
+                            <datalist id="street-datalist"></datalist>
                             <button class="btn btn-default input-lg" type="button">Go!</button>
                         </span>
                     </div>
@@ -32,6 +34,7 @@
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="js/input_helper.js"></script>
 </body>
 </html>
 
