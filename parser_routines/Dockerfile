@@ -14,5 +14,4 @@ COPY ./conf/celerybeat.conf /etc/supervisor/conf.d/celerybeat.conf
 COPY ./conf/celeryd.conf /etc/supervisor/conf.d/celeryd.conf
 
 RUN adduser --disabled-password --gecos '' workeruser
-
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

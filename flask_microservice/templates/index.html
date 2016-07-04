@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>AMAZING ISP COVERAGE</title>
-    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
 
-    <link rel="stylesheet" type="text/css" href="index.css"/>
+    {% assets "index_css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css"/>
 </head>
 <body>
 
@@ -32,18 +35,8 @@
     </div>
 </div>
 
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="js/input_helper.js"></script>
+    {% assets "index_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
 </body>
 </html>
-
-
-<!--<div class="col-lg-6">-->
-    <!--<div class="input-group">-->
-      <!--<span class="input-group-btn">-->
-        <!--<button class="btn btn-default" type="button">Go!</button>-->
-      <!--</span>-->
-        <!--<input type="text" class="form-control">-->
-    <!--</div>&lt;!&ndash; /input-group &ndash;&gt;-->
-<!--</div>&lt;!&ndash; /.col-lg-6 &ndash;&gt;-->

@@ -3,10 +3,12 @@ version: "2"
 services:
   redis:
     image: redis
+
   db:
     image: postgres:9.4.4
     ports:
       - "5432:5432"
+
   messagequeue:
     image: rabbitmq
 
@@ -14,10 +16,29 @@ services:
     build: falcon_microservice
     volumes: 
       - ./falcon_microservice:/api
-    ports:
-      - "8080:8000"
+    expose:
+      - "8000"
     links:
       - db
+
+  flask_service:
+    restart: always
+    build: flask_microservice
+    volumes:
+    - ./flask_microservice:/app
+    expose:
+      - "7000"
+
+  nginx_service:
+    restart: always
+    build: nginx_microservice
+    ports:
+      - "80:80"
+    links:
+      - falcon_service:falcon
+      - flask_service:flask
+    volumes:
+    - ./nginx_microservice/sites-enabled:/www/static
 
   parsing_service:
     build: parser_routines
@@ -30,5 +51,7 @@ services:
     depends_on:
       - redis
       - db
-      - messagequeue   
+      - messagequeue
+
+
 
