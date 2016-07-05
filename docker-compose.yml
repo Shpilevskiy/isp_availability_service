@@ -33,12 +33,10 @@ services:
     restart: always
     build: nginx_microservice
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - falcon_service:falcon
       - flask_service:flask
-    volumes:
-    - ./nginx_microservice/sites-enabled:/www/static
 
   parsing_service:
     build: parser_routines

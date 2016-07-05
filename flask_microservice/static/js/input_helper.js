@@ -7,7 +7,7 @@ $(document).ready(function($){
     var streetDatalist = $('#street-datalist');
 
     cityInput.on("keyup", function(e){
-        var ajax_url = '/cities?q=' + $(this).val();
+        var ajax_url = '/api/cities?q=' + $(this).val();
         $.ajax(ajax_url,
             {
                 crossDomain: true,
