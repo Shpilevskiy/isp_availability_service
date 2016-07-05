@@ -14,29 +14,23 @@ services:
 
   falcon_service:
     build: falcon_microservice
-    volumes: 
-      - ./falcon_microservice:/api
+    volumes:
+       - ./falcon_microservice:/api
     expose:
       - "8000"
     links:
       - db
 
-  flask_service:
-    restart: always
-    build: flask_microservice
-    volumes:
-    - ./flask_microservice:/app
-    expose:
-      - "7000"
-
   nginx_service:
     restart: always
     build: nginx_microservice
+    volumes:
+      - ./nginx_microservice/static:/static
     ports:
       - "8080:80"
     links:
       - falcon_service:falcon
-      - flask_service:flask
+#      - flask_service:flask
 
   parsing_service:
     build: parser_routines
