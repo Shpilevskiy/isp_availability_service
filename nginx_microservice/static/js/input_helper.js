@@ -7,6 +7,11 @@ $(document).ready(function($){
     var streetDatalist = $('#street-datalist');
 
     cityInput.on("keyup", function(e){
+        // process alphanumerical characters only  
+        if ( !(e.which >= 48  && e.which <= 90) )  {
+             return;
+        }
+       
         var ajax_url = '/api/cities?q=' + $(this).val();
         $.ajax(ajax_url,
             {
@@ -14,7 +19,6 @@ $(document).ready(function($){
                 success: function(result){
                     cityDatalist.empty();
                     result.cities.forEach(function(item, i, arr){
-                        console.log(item);
                         newOption = $('<option value=' + item + '>');
                         cityDatalist.append(newOption);
                     });
