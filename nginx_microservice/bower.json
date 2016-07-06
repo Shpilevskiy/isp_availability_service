@@ -1,0 +1,32 @@
+{
+  "name": "isp_service",
+  "homepage": "https://github.com/MrLokans/isp_availability_service",
+  "authors": [
+    "MrLokans <trikster1911@gmail.com>",
+    "Shpilevskiy<shpilevskiy.n@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "isp",
+    "belarus",
+    "minsk",
+    "internet",
+    "coverage",
+    "map",
+    "service"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
