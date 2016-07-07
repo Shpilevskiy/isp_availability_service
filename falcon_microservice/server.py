@@ -1,7 +1,11 @@
 import json
 
 import falcon
-
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import MetaData
 
 class HelloWorldResource(object):
     def on_get(self, req, resp):
@@ -9,10 +13,13 @@ class HelloWorldResource(object):
         resp.body = json.dumps(data)
 
 
-cities = {'Минск', 'Гомель', 'Могилев', 'Витебск', 'Гродно', 'Брест',
-          'Бобруйск', 'Барановичи', 'Борисов', 'Пинск', 'Орша',
-          'Мозырь', 'Солигорск', 'Новополоцк', 'Лида', 'Молодечно',
-          'Полоцк', 'Жлобин', 'Светлогорск', 'Речица'}
+Base = declarative_base()
+
+
+class City(Base):
+    __tablename__ = 'City'
+    id = Column(Integer, primary_key=True)
+    city_name = Column(String(30), unique=True, nullable=False, index=True)
 
 
 class CitiesResource(object):
@@ -22,14 +29,22 @@ class CitiesResource(object):
         # and headers below must be removed
         resp.set_headers({"Access-Control-Allow-Origin": "*"})
         query = req.get_param('q', default="")
+
+        engine = create_engine('postgresql+psycopg2://postgres:@db/postgres',
+                               isolation_level="READ UNCOMMITTED", echo=True)
+        Session = sessionmaker()
+        Session.configure(bind=engine)
+        session = Session()
+        metadata = MetaData(engine)
+        Base.metadata.create_all(engine)
+
         if not query:
             resp.body = json.dumps({"cities": []})
         else:
-            result = []
-            for c in cities:
-                if query.lower() in c.lower():
-                    result.append(c)
-            json_responce = {"cities": result}
+            result = session.query(City).filter(City.city_name.contains(query)).all()
+            response = [r.city_name for r in result]
+            json_responce = {"cities": response}
+            print(json_responce)
             resp.body = json.dumps(json_responce)
             resp.status = falcon.HTTP_200
 

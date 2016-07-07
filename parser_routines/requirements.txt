@@ -6,3 +6,5 @@ kombu==3.0.35
 pytz==2016.4
 redis==2.10.5
 git+git://github.com/MrLokans/isp-coverage-map.git
+sqlalchemy==1.0.13
+psycopg2==2.6.1

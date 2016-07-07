@@ -3,9 +3,11 @@ FROM ubuntu:16.04
 
 # Install 2 versions of python and extra dependencies for lxml package
 RUN apt-get update; apt-get install -y python3  python3-pip python python-pip python-dev python3-dev\
-                                       git libxml2-dev libxslt1-dev libevent-dev build-essential zlib1g-dev
-ADD . /app/parser_routines/
+                                       git libxml2-dev libxslt1-dev libevent-dev build-essential zlib1g-dev\
+                                       libpq-dev python-dev
+#ADD . /app/parser_routines/
 WORKDIR /app/parser_routines/
+ADD requirements.txt /app/parser_routines/requirements.txt
 RUN python3 -m pip install -r requirements.txt
 RUN python2 -m pip install supervisor
 
