@@ -2,25 +2,13 @@ import json
 
 import falcon
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column, Integer, String
-from sqlalchemy import MetaData
+from sqlalchemy.sql import text
+
 
 class HelloWorldResource(object):
     def on_get(self, req, resp):
         data = {"text": "Hello, world and you also!"}
         resp.body = json.dumps(data)
-
-
-Base = declarative_base()
-
-
-class City(Base):
-    __tablename__ = 'City'
-    id = Column(Integer, primary_key=True)
-    city_name = Column(String(30), unique=True, nullable=False, index=True)
-
 
 class CitiesResource(object):
     def on_get(self, req, resp):
@@ -32,17 +20,18 @@ class CitiesResource(object):
 
         engine = create_engine('postgresql+psycopg2://postgres:@db/postgres',
                                isolation_level="READ UNCOMMITTED", echo=True)
-        Session = sessionmaker()
-        Session.configure(bind=engine)
-        session = Session()
-        metadata = MetaData(engine)
-        Base.metadata.create_all(engine)
 
         if not query:
             resp.body = json.dumps({"cities": []})
         else:
-            result = session.query(City).filter(City.city_name.contains(query)).all()
-            response = [r.city_name for r in result]
+            with engine.connect() as con:
+                statement = text("""
+                                SELECT "City".city_name AS "City_city_name"
+                                FROM "City"
+                                WHERE "City".city_name LIKE :name
+                                """)
+                result = con.execute(statement, name=query.lower() + '%')
+                response = [r[0] for r in result]
             json_responce = {"cities": response}
             print(json_responce)
             resp.body = json.dumps(json_responce)

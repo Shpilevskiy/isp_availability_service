@@ -24,21 +24,18 @@ def main():
     metadata = MetaData(engine)
     Base.metadata.create_all(engine)
 
-    data = {"city_name_1": "ми"}
+    data = "минск"
     result = []
     with engine.connect() as con:
         statement = text("""
-                        SELECT "City".id AS "City_id", "City".city_name AS "City_city_name"
+                        SELECT "City".city_name AS "City_city_name"
                         FROM "City"
-                        WHERE "City".city_name LIKE :city_name_1
+                        WHERE "City".city_name LIKE :name
                         """)
-        result = con.execute(statement, **data)
-        print("!")
-        for r in result:
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print(r.city_name)
-    # json_responce = {"cities": result}
-    # print(json_responce)
+        result = con.execute(statement, name=data+'%')
+        response = [r[0] for r in result]
+    json_responce = {"cities": response}
+    print(json_responce)
 
 
 if __name__ == '__main__':
