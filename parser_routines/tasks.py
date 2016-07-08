@@ -1,3 +1,5 @@
+import logging
+
 from celery import Celery
 from by_isp_coverage import ByflyParser
 
@@ -9,6 +11,8 @@ from models import City
 
 celery = Celery('tasks')
 celery.config_from_object('celeryconfig')
+
+logging.getLogger('sqlalchemy.engine').setLevel(logging.WARN)
 
 
 @celery.task
