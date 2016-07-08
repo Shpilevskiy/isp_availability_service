@@ -8,6 +8,7 @@ RUN apt-get update; apt-get install -y python3  python3-pip python python-pip py
 #ADD . /app/parser_routines/
 WORKDIR /app/parser_routines/
 ADD requirements.txt /app/parser_routines/requirements.txt
+
 RUN python3 -m pip install -r requirements.txt
 RUN python2 -m pip install supervisor
 
@@ -18,4 +19,6 @@ COPY ./conf/celerybeat.conf /etc/supervisor/conf.d/celerybeat.conf
 COPY ./conf/celeryd.conf /etc/supervisor/conf.d/celeryd.conf
 
 RUN adduser --disabled-password --gecos '' workeruser
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# We need to make sure all of the required tables are created in the database and celery beat and worker are launched
+CMD ["bash", "-c", "python3 /app/parser_routines/create_db_tables.py && supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
