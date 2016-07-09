@@ -52,9 +52,9 @@ class ISP_Resource(object):
 
 def cleanup_like_field(s):
     if '*' in s or '_' in s:
-        looking_for = s.replace('_', '__')\
-                            .replace('*', '%')\
-                            .replace('?', '_')
+        looking_for = s.replace('_', '__') \
+            .replace('*', '%') \
+            .replace('?', '_')
     else:
         looking_for = '%{0}%'.format(s)
     return looking_for
@@ -67,7 +67,6 @@ class ConnectionResource(object):
         city = req.get_param('city', default="")
         number = req.get_param('number', default="")
 
-
         str_field = cleanup_like_field(street)
         connections = session.query(Connection).filter(Connection.street.ilike(str_field))
         connections_data = [
@@ -79,7 +78,7 @@ class ConnectionResource(object):
                 "street": con.street,
                 "house_number": con.house_number,
             } for con in connections
-        ]
+            ]
         resp.body = json.dumps(connections_data)
 
 
@@ -101,6 +100,7 @@ def fill_db():
 
 def main():
     fill_db()
+
 
 if __name__ == '__main__':
     main()
