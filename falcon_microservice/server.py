@@ -38,6 +38,26 @@ class CitiesResource(object):
             resp.body = json.dumps(json_responce)
         resp.status = falcon.HTTP_200
 
+
+class ProvidersResource(object):
+    def on_get(self, req, resp):
+        # Only for local development
+        # After nginx will be set up CORS policy should work properly
+        # and headers below must be removed
+        resp.set_headers({"Access-Control-Allow-Origin": "*"})
+
+        with engine.connect() as con:
+            statement = text("""
+                            SELECT DISTINCT "provider".name, "provider".url
+                            FROM "provider"
+                            """)
+            result = con.execute(statement)
+            providers = [{"name": p[0], "url": p[1]} for p in result]
+        json_responce = {"providers": providers}
+        resp.body = json.dumps(json_responce)
+        resp.status = falcon.HTTP_200
+
 api = falcon.API()
 api.add_route('/hello', HelloWorldResource())
 api.add_route('/cities', CitiesResource())
+api.add_route('/providers', ProvidersResource())
