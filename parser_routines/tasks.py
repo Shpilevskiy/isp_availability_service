@@ -2,9 +2,9 @@ import logging
 
 from celery import Celery
 from by_isp_coverage import ByflyParser
+from by_isp_coverage.validators import ConnectionValidator
 
 from sqlalchemy import exists
-from sqlalchemy.orm import sessionmaker
 
 from db import session
 from models import ISP, Status, Connection
@@ -54,5 +54,5 @@ def fill_db_from_connections(connections):
 
 @celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
 def load_byfly_data():
-    parser = ByflyParser()
+    parser = ByflyParser(validator=ConnectionValidator())
     fill_db_from_connections(parser.get_connections())
