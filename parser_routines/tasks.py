@@ -42,7 +42,14 @@ def fill_db_from_connections(connections):
                                    street=connection.street, house_number=connection.house,
                                    isp=isp, status=status))
             session.commit()
-            # need to check connection status for changes
+        else:
+            exist_connection = session.query(Connection).filter(Connection.region == connection.region,
+                                                                Connection.city == connection.city,
+                                                                Connection.street == connection.street,
+                                                                Connection.house_number == connection.house).first()
+            if exist_connection.status != status:
+                exist_connection.status = status
+                session.commit()
 
 
 @celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
