@@ -28,11 +28,11 @@ class CitiesResource(object):
         else:
             with engine.connect() as con:
                 statement = text("""
-                                SELECT "City".city_name AS "City_city_name"
-                                FROM "City"
-                                WHERE "City".city_name ILIKE :name
+                                SELECT DISTINCT "connection".city AS "connection_city"
+                                FROM "connection"
+                                WHERE "connection".city ILIKE :name
                                 """)
-                result = con.execute(statement, name="{}%".format(query))
+                result = con.execute(statement, name="%{}%".format(query))
                 response = [r[0] for r in result]
             json_responce = {"cities": response}
             resp.body = json.dumps(json_responce)

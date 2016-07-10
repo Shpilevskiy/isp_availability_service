@@ -1,5 +1,5 @@
-from engine import engine
-from models import Base, City
+from db import engine
+from models import Base
 
 
 def main():
