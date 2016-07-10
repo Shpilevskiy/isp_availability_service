@@ -26,9 +26,7 @@ class SqlAclhemyTask(celery.Task):
 
 def fill_db_from_connections(connections):
     for connection in connections:
-        if not session.query(exists().where(ISP.name == connection.provider)).scalar():
-            session.add(ISP(name=connection.provider, url='test'))
-            session.commit()
+
         isp = session.query(ISP).filter(ISP.name == connection.provider).first()
         if not session.query(exists().where(Status.status == connection.status)).scalar():
             session.add(Status(status=connection.status))
