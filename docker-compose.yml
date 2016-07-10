@@ -22,8 +22,6 @@ services:
       - "8000"
     links:
       - db
-    depends_on:
-      - db
 
   nginx_service:
     restart: always
@@ -43,10 +41,3 @@ services:
       - redis
       - db
       - messagequeue
-    depends_on:
-      - redis
-      - db
-      - messagequeue
-
-
-

@@ -17,7 +17,10 @@ COPY ./conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./conf/celerybeat.conf /etc/supervisor/conf.d/celerybeat.conf
 COPY ./conf/celeryd.conf /etc/supervisor/conf.d/celeryd.conf
 
+COPY ./docker-entrypoint.sh /app/parser_routines/
+COPY ./wait_for_db.py /app/parser_routines/
+
 RUN adduser --disabled-password --gecos '' workeruser
 
 # We need to make sure all of the required tables are created in the database and celery beat and worker are launched
-CMD ["bash", "-c", "python3 /app/parser_routines/create_db_tables.py && supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/app/parser_routines/docker-entrypoint.sh"]
