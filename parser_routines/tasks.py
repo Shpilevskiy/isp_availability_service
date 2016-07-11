@@ -1,7 +1,7 @@
 import logging
 
 from celery import Celery
-from by_isp_coverage import ByflyParser
+from by_isp_coverage import ByflyParser, FlynetParser, MTS_Parser, UNETParser, AtlantParser
 from by_isp_coverage.validators import ConnectionValidator
 
 from sqlalchemy import exists
@@ -26,7 +26,6 @@ class SqlAclhemyTask(celery.Task):
 
 def fill_db_from_connections(connections):
     for connection in connections:
-
         isp = session.query(ISP).filter(ISP.name == connection.provider).first()
         if not session.query(exists().where(Status.status == connection.status)).scalar():
             session.add(Status(status=connection.status))
@@ -54,3 +53,28 @@ def fill_db_from_connections(connections):
 def load_byfly_data():
     parser = ByflyParser(validator=ConnectionValidator())
     fill_db_from_connections(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_flynet_data():
+    parser = FlynetParser(None, validator=ConnectionValidator())
+    fill_db_from_connections(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_mts_data():
+    parser = MTS_Parser(None, validator=ConnectionValidator())
+    fill_db_from_connections(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_unet_data():
+    parser = UNETParser(None, validator=ConnectionValidator())
+    fill_db_from_connections(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_atlant_data():
+    parser = AtlantParser(None, validator=ConnectionValidator())
+    fill_db_from_connections(parser.get_connections())
+
