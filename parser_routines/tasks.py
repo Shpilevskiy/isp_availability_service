@@ -1,13 +1,14 @@
 import logging
 
 from celery import Celery
-from by_isp_coverage import ByflyParser
+from by_isp_coverage import ByflyParser, FlynetParser, MTS_Parser, UNETParser, AtlantParser
+from by_isp_coverage.validators import ConnectionValidator
 
 from sqlalchemy import exists
-from sqlalchemy.orm import sessionmaker
 
 from db import session
 from models import ISP, Status, Connection
+from exceptions import WrongProvider
 
 celery = Celery('tasks')
 celery.config_from_object('celeryconfig')
@@ -26,10 +27,9 @@ class SqlAclhemyTask(celery.Task):
 
 def fill_db_from_connections(connections):
     for connection in connections:
-        if not session.query(exists().where(ISP.name == connection.provider)).scalar():
-            session.add(ISP(name=connection.provider, url='test'))
-            session.commit()
         isp = session.query(ISP).filter(ISP.name == connection.provider).first()
+        if not isp:
+            raise WrongProvider('No such provider: {}'.format(connection.provider))
         if not session.query(exists().where(Status.status == connection.status)).scalar():
             session.add(Status(status=connection.status))
             session.commit()
@@ -52,7 +52,38 @@ def fill_db_from_connections(connections):
                 session.commit()
 
 
+def call_db_filling(connections):
+    try:
+        fill_db_from_connections(connections)
+    except WrongProvider as error:
+        print(error)
+
+
 @celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
 def load_byfly_data():
-    parser = ByflyParser()
-    fill_db_from_connections(parser.get_connections())
+    parser = ByflyParser(validator=ConnectionValidator())
+    call_db_filling(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_flynet_data():
+    parser = FlynetParser(None, validator=ConnectionValidator())
+    call_db_filling(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_mts_data():
+    parser = MTS_Parser(None, validator=ConnectionValidator())
+    call_db_filling(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_unet_data():
+    parser = UNETParser(None, validator=ConnectionValidator())
+    call_db_filling(parser.get_connections())
+
+
+@celery.task(base=SqlAclhemyTask, max_retries=5, default_retry_delay=30)
+def load_atlant_data():
+    parser = AtlantParser(None, validator=ConnectionValidator())
+    call_db_filling(parser.get_connections())

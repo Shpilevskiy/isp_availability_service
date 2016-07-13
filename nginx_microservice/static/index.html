@@ -24,17 +24,44 @@
                         <span class="input-group-btn">
                             <input type="text" class="form-control input-lg" list="street-datalist"  id="street-input" placeholder="Улица">
                             <datalist id="street-datalist"></datalist>
-                            <button class="btn btn-default input-lg" type="button">Go!</button>
+                            <button class="btn btn-default input-lg" id="search-sumbit" type="button">Go!</button>
                         </span>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+<script id="connection-row-template" type="x-tmpl-mustache">
+<tr class="connection-row">
+    <td>{{ city }}</td>
+    <td>{{ street }}</td>
+    <td>{{ house }}</td>
+    <td><a href="{{ url }}">{{ provider }}</a></td>
+    <td>{{ status }}</td>
+</tr>
+</script>
+
+    <div class="row">
+        <table class="col-md-12 table" id="connections-list">
+            <caption>По вашему адресу доступны следующие подключения:</caption>
+            <thead>
+                <tr>
+                    <th>Город</th>
+                    <th>Улица</th>
+                    <th>Номер дома</th>
+                    <th>Провайдер</th>
+                    <th>Статус</th>                    
+                </tr>
+            </thead>
+        </table>
+    </div>
+
 </div>
 
-        <script type="text/javascript" src="/static/vendor/jquery/dist/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/static/js/input_helper.js"></script>
+    <script type="text/javascript" src="/static/vendor/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/mustache.js/mustache.min.js"></script>
+    <script type="text/javascript" src="/static/js/input_helper.js"></script>
 </body>
 </html>
