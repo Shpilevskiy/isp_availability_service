@@ -6,6 +6,7 @@ import falcon
 from sqlalchemy.sql import text
 
 from sqlalchemy import create_engine
+
 engine = create_engine('postgresql+psycopg2://postgres:@db/postgres',
                        isolation_level="READ UNCOMMITTED", echo=False)
 
@@ -18,6 +19,39 @@ def is_city_present(city_name):
         return bool(result.scalar())
 
 
+def is_street_in_city_present(city, street):
+    t = text('''SELECT DISTINCT "connection".street as street
+        FROM "connection"
+        WHERE city=:city_name AND street ILIKE :street_name''')
+    with engine.connect() as conn:
+        result = conn.execute(t, city_name=city, street_name=street)
+        return bool(result.scalar())
+
+
+def check_city_query(city):
+    if not city:
+        return 'Empty city supplied'
+    return
+
+
+def check_street_query(street):
+    if not street:
+        return 'Empty street supplied'
+    return
+
+
+def check_city_present(city):
+    if not is_city_present(city):
+        return 'City {} is not found.'.format(city)
+    return
+
+
+def check_street_in_city_present(city, street):
+    if not is_street_in_city_present(city, street):
+        return 'Street {} is not found in City {}.'.format(street, city)
+    return
+
+
 class HelloWorldResource(object):
     def on_get(self, req, resp):
         data = {"text": "Hello, world and you also!"}
@@ -25,7 +59,6 @@ class HelloWorldResource(object):
 
 
 class CitiesResource(object):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger = logging.getLogger('city_resource')
@@ -72,8 +105,65 @@ class ProvidersResource(object):
         resp.status = falcon.HTTP_200
 
 
-class StreetsResource(object):
+class SearchResource(object):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = logging.getLogger('search_resource')
 
+    def on_get(self, req, resp):
+        resp.set_headers({"Access-Control-Allow-Origin": "*"})
+        city = req.get_param('city')
+        street = req.get_param('street')
+
+        self.logger.warn("city: {}, street: {}".format(city, street))
+
+        error_list = []
+        msgs = [check_city_query(city), check_street_query(street)]
+        [error_list.append(msg) for msg in msgs if msg is not None]
+        if not error_list:
+            msgs.append(check_city_present(city.title()))
+            msgs.append(check_street_in_city_present(city.title(), street))
+            [error_list.append(msg) for msg in msgs if msg is not None]
+        if error_list:
+            self.logger.warn(error_list)
+            response_msg = {'Errors': error_list}
+            resp.body = json.dumps(response_msg)
+            resp.status = falcon.HTTP_200
+            return
+
+        connection = text('''SELECT *
+                    FROM "connection"
+                    WHERE city=:city_name AND street ILIKE :street_name
+                    ''')
+
+        isp = text(""" SELECT "provider".name, "provider".url
+                            FROM "provider"
+                            WHERE id=:provider_id
+                   """)
+
+        status = text(""" SELECT "status".status as status
+                              FROM "status"
+                              WHERE id=:status_id
+                      """)
+
+        search_result = []
+        with engine.connect() as conn:
+            result = conn.execute(connection,
+                                  city_name=city,
+                                  street_name=street)
+        for r in result:
+            with engine.connect() as conn:
+                connection_provider = conn.execute(isp, provider_id=r[1]).first()
+                connection_status = conn.execute(status, status_id=r[2])
+                search_result.append(
+                    (connection_provider[0], connection_provider[1], connection_status.first()[0], r[4], r[5], r[6]))
+
+        json_response = {"Connections": search_result}
+        resp.body = json.dumps(json_response)
+        resp.status = falcon.HTTP_200
+
+
+class StreetsResource(object):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger = logging.getLogger('street_resource')
@@ -125,8 +215,10 @@ class StreetsResource(object):
         resp.body = json.dumps(json_response)
         resp.status = falcon.HTTP_200
 
+
 api = falcon.API()
 api.add_route('/hello', HelloWorldResource())
 api.add_route('/cities', CitiesResource())
 api.add_route('/providers', ProvidersResource())
 api.add_route('/streets', StreetsResource())
+api.add_route('/search', SearchResource())
