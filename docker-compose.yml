@@ -22,6 +22,8 @@ services:
       - "8000"
     links:
       - db
+    env_file:
+      - ./db.env
 
   nginx_service:
     restart: always
@@ -41,3 +43,5 @@ services:
       - redis
       - db
       - messagequeue
+    env_file:
+      - ./db.env
