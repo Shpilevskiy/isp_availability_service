@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 
@@ -7,7 +8,19 @@ from sqlalchemy.sql import text
 
 from sqlalchemy import create_engine
 
-engine = create_engine('postgresql+psycopg2://postgres:@db/postgres',
+DEFAULT_DB_CONNECTOR = 'postgresql+psycopg2'
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST', "127.0.0.1")
+POSTGRES_DATABASE = os.environ.get('POSTGRES_DB', "postgres")
+POSTGRES_USER = os.environ.get('POSTGRES_USER', "postgres")
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', "")
+POSTGRES_TABLE = os.environ.get('POSTGRES_TABLE', "postgres")
+engine_str = '{connector}://{user}:{password}@{host}/{db}'
+engine_str = engine_str.format(connector=DEFAULT_DB_CONNECTOR,
+                               user=POSTGRES_USER,
+                               password=POSTGRES_PASSWORD,
+                               host=POSTGRES_HOST,
+                               db=POSTGRES_DATABASE)
+engine = create_engine(engine_str,
                        isolation_level="READ UNCOMMITTED", echo=False)
 
 
