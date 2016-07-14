@@ -93,3 +93,9 @@ ENV/
 # Front-end stuff
 bower_components/
 node_modules/
+
+# Db files
+*.db
+
+# Process PID files
+*.pid
