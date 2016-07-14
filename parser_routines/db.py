@@ -1,6 +1,12 @@
+"""
+Entrypoint for all of the modules referring
+database connection.
+"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
+
 
 engine = create_engine('postgresql+psycopg2://postgres:@db/postgres',
                        isolation_level="READ UNCOMMITTED", echo=False)

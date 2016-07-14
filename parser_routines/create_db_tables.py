@@ -6,7 +6,12 @@ from sqlalchemy import exists
 from by_isp_coverage.utils import get_parsers
 
 
-def create_isp_tables():
+def fill_provider_data(session):
+    """
+    We make sure that provider's data is present in
+    the database before actually running tasks
+    to avoid provider checks on every connection addition.
+    """
     parser_classes = get_parsers()
     for cls in parser_classes:
         if not session.query(exists().where(ISP.name == cls.PARSER_NAME)).scalar():
@@ -14,9 +19,14 @@ def create_isp_tables():
             session.commit()
 
 
-def main():
+def create_model_tables(engine):
+    """Create all of the tables defined in ORM models."""
     Base.metadata.create_all(engine)
-    create_isp_tables()
+
+
+def main():
+    create_model_tables(engine)
+    fill_provider_data(session)
 
 if __name__ == '__main__':
     main()
