@@ -84,16 +84,23 @@ $(document).ready(function($){
         e.preventDefault();
         $('#connections-list .connection-row').remove();
     
-        defaultData = {"connections": [
-            {"city": "Минск", "street": "Карла Либнехта", "house": "98", "url": "http://byfly.by", "provider": "byfly", "status": "Хуй вам, а не XPON"},
-            {"city": "Минск", "street": "Карла Либнехта", "house": "94", "url": "http://byfly.by", "provider": "byfly", "status": "Хуй вам, а не XPON"},
-            {"city": "Минск", "street": "Карла Либнехта", "house": "96", "url": "http://byfly.by", "provider": "byfly", "status": "Хуй вам, а не XPON"}
-                              ]};
+        street = streetInput.val();
+        city = cityInput.val();
+        var ajax_url = '/api/search?city=' + city + '&street=' + street;
+        $.ajax(ajax_url,
+            {
+                crossDomain: true,
+                success: function(result){
+                    result.connections.forEach(function(item, i, arr){
+                        console.log(item);
+                        var newRow = render_row(result.city, result.street, item.house, item.provider, item.url, item.status);
+                        connectionsList.append($(newRow));
+                    });
+                }
+            }
+        );
       // city, street, house, provider, provider_url, status
-        defaultData.connections.forEach(function(item, i, arr){
-            var newRow = render_row(item.city, item.street, item.house, item.provider, item.url, item.status);
-            connectionsList.append($(newRow));
-        });
+
     });
 
 });
