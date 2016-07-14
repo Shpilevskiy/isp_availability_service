@@ -13,7 +13,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Create all initial tables
-echo "Creating database tables."
+echo "Initialising database data."
 python3 /app/parser_routines/create_db_tables.py
 
 # Launch celery beat and celery workers
