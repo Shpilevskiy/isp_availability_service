@@ -146,11 +146,11 @@ class SearchResource(object):
                               WHERE id=:status_id
                       """)
 
-        search_result = []
         with engine.connect() as conn:
             result = conn.execute(connection,
                                   city_name=city,
                                   street_name="%{}%".format(street))
+        search_result = []
         for r in result:
             with engine.connect() as conn:
                 connection_provider = conn.execute(isp, provider_id=r[1]).first()
@@ -215,10 +215,11 @@ class StreetsResource(object):
                                   city_name=city_query,
                                   street_name="%{}%".format(street_query))
             streets = [r[0] for r in result]
-
-        self.logger.warn("Streets: ".format(streets))
-        json_response = {"streets": streets}
-        resp.body = json.dumps(json_response)
+        self.logger.warn("Streets: {}".format(streets))
+        response = {'city': city_query,
+                    'items_count': len(streets),
+                    'streets': streets}
+        resp.body = json.dumps(response)
         resp.status = falcon.HTTP_200
 
 
