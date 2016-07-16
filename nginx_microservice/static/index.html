@@ -12,25 +12,23 @@
 
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-12 search-input">
-            <div class="row">
-                <form role="form">
-                    <div class="col-md-3  ">
-                        <input type="text" class="form-control input-lg" list="city-datalist" id="city-input" placeholder="Город">
-                        <datalist id="city-datalist"></datalist>
-                    </div>
-                    <div class="col-md-9 input-group ">
-                        <span class="input-group-btn">
-                            <input type="text" class="form-control input-lg" list="street-datalist"  id="street-input" placeholder="Улица">
-                            <datalist id="street-datalist"></datalist>
-                            <button class="btn btn-default input-lg" id="search-sumbit" type="button">Go!</button>
-                        </span>
-                    </div>
-                </form>
+    <div class="center">
+         <div class="row">
+        <form role="form">
+            <div class="col-md-3 col-lg-3 col-xs-4">
+                <input type="text" class="form-control input-lg" list="city-datalist" id="city-input" placeholder="Город">
+                <datalist id="city-datalist"></datalist>
             </div>
+            <div class="col-md-8 col-lg-8 col-xs-7 input-group ">
+                <span class="input-group-btn">
+                    <input type="text" class="form-control input-lg" list="street-datalist"  id="street-input" placeholder="Улица">
+                    <datalist id="street-datalist"></datalist>
+                    <button class="btn btn-default input-lg" id="search-sumbit" type="button">Go!</button>
+                </span>
+            </div>
+        </form>
         </div>
-    </div>
+
 
 <script id="connection-row-template" type="x-tmpl-mustache">
 <tr class="connection-row">
@@ -42,21 +40,21 @@
 </tr>
 </script>
 
-    <div class="row">
-        <table class="col-md-12 table" id="connections-list">
-            <caption>По вашему адресу доступны следующие подключения:</caption>
-            <thead>
-                <tr>
-                    <th>Город</th>
-                    <th>Улица</th>
-                    <th>Номер дома</th>
-                    <th>Провайдер</th>
-                    <th>Статус</th>                    
-                </tr>
-            </thead>
-        </table>
+        <div class="row">
+            <table class="col-md-12 table" id="connections-list">
+                <caption>По вашему адресу доступны следующие подключения:</caption>
+                <thead>
+                    <tr>
+                        <th>Город</th>
+                        <th>Улица</th>
+                        <th>Номер дома</th>
+                        <th>Провайдер</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
-
 </div>
 
     <script type="text/javascript" src="/static/vendor/jquery/dist/jquery.min.js"></script>
