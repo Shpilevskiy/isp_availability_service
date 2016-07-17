@@ -63,8 +63,14 @@ $(document).ready(function($){
          if (!isValidInputKey(e.which)){
             return;
         }
-        street = $(this).val();
+        street = streetInput.val();
         city = cityInput.val();
+
+        if (street.length < 3){
+            // Avoid too short search queries
+            return;
+        }
+
         var ajax_url = '/api/streets?city=' + city + '&street_query=' + street;
         $.ajax(ajax_url,
             {
@@ -72,7 +78,10 @@ $(document).ready(function($){
                 success: function(result){
                     streetDatalist.empty();
                     result.streets.forEach(function(item, i, arr){
-                        newOption = $('<option value=' + item + '>');
+                        newOption = $('<option>', {
+                            value: item.toString(),
+                            text: item.toString(),
+                        });
                         streetDatalist.append(newOption);
                     });
                 }
