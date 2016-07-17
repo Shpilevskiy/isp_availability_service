@@ -15,13 +15,15 @@
     <div class="center">
          <div class="row">
         <form role="form">
+            <!-- City selector -->
             <div class="col-md-3 col-lg-3 col-xs-4">
                 <input type="text" class="form-control input-lg" list="city-datalist" id="city-input" placeholder="Город">
                 <datalist id="city-datalist"></datalist>
             </div>
+            <!-- Street selector -->
             <div class="col-md-8 col-lg-8 col-xs-7 input-group ">
                 <span class="input-group-btn">
-                    <input type="text" class="form-control input-lg" list="street-datalist"  id="street-input" placeholder="Улица">
+                    <input type="text" class="form-control input-lg" list="street-datalist" id="street-input" placeholder="Улица">
                     <datalist id="street-datalist"></datalist>
                     <button class="btn btn-default input-lg" id="search-sumbit" type="button">Go!</button>
                 </span>
@@ -29,17 +31,7 @@
         </form>
         </div>
 
-
-<script id="connection-row-template" type="x-tmpl-mustache">
-<tr class="connection-row">
-    <td>{{ city }}</td>
-    <td>{{ street }}</td>
-    <td>{{ house }}</td>
-    <td><a href="{{ url }}">{{ provider }}</a></td>
-    <td>{{ status }}</td>
-</tr>
-</script>
-
+        <!-- Connection availability table -->
         <div class="row">
             <table class="col-md-12 table" id="connections-list">
                 <caption>По вашему адресу доступны следующие подключения:</caption>
@@ -57,6 +49,15 @@
     </div>
 </div>
 
+    <script id="connection-row-template" type="x-tmpl-mustache">
+    <tr class="connection-row">
+        <td>{{ city }}</td>
+        <td>{{ street }}</td>
+        <td>{{ house }}</td>
+        <td><a href="{{ url }}">{{ provider }}</a></td>
+        <td>{{ status }}</td>
+    </tr>
+    </script>
     <script type="text/javascript" src="/static/vendor/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/static/vendor/mustache.js/mustache.min.js"></script>
