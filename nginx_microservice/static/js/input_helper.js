@@ -30,12 +30,6 @@ function renderConnectionsTable(cityName, streetName){
 
 $(document).ready(function($){
 
-    streetInput.keyup(function (event) {
-       if (event.keyCode == 13){
-           searchButton.click();
-       }
-    });
-
     searchButton.on("click", function(e){
         e.preventDefault();
         renderConnectionsTable(cityInput.val(), streetInput.val());
