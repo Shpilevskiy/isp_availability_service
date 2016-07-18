@@ -1,28 +1,9 @@
-import os
 import json
 import logging
-
 import falcon
-
 from sqlalchemy.sql import text
-
-from sqlalchemy import create_engine
-
-DEFAULT_DB_CONNECTOR = 'postgresql+psycopg2'
-POSTGRES_HOST = os.environ.get('POSTGRES_HOST', "127.0.0.1")
-POSTGRES_DATABASE = os.environ.get('POSTGRES_DB', "postgres")
-POSTGRES_USER = os.environ.get('POSTGRES_USER', "postgres")
-POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', "")
-POSTGRES_TABLE = os.environ.get('POSTGRES_TABLE', "postgres")
-engine_str = '{connector}://{user}:{password}@{host}/{db}'
-engine_str = engine_str.format(connector=DEFAULT_DB_CONNECTOR,
-                               user=POSTGRES_USER,
-                               password=POSTGRES_PASSWORD,
-                               host=POSTGRES_HOST,
-                               db=POSTGRES_DATABASE)
-engine = create_engine(engine_str,
-                       isolation_level="READ UNCOMMITTED", echo=False)
-
+from utils.db import engine
+from utils.сhecker import Checker
 
 def is_city_present(city_name):
     t = text('''SELECT "connection".city as city
@@ -131,11 +112,12 @@ class SearchResource(object):
         self.logger.warn("city: {}, street: {}".format(city, street))
 
         error_list = []
-        msgs = [check_city_query(city), check_street_query(street)]
+        checker = Checker()
+        msgs = [checker.check_city_query(city), checker.check_street_query(street)]
         [error_list.append(msg) for msg in msgs if msg is not None]
         if not error_list:
-            msgs.append(check_city_present(city.title()))
-            msgs.append(check_street_in_city_present(city.title(), street))
+            msgs.append(checker.check_city_present(city.title()))
+            msgs.append(checker.check_street_in_city_present(city.title(), street))
             [error_list.append(msg) for msg in msgs if msg is not None]
         if error_list:
             self.logger.warn(error_list)

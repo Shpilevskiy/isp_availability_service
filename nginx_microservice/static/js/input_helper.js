@@ -36,6 +36,12 @@ var render_row = function(city, street, house, provider, provider_url, status){
 
 $(document).ready(function($){
 
+    streetInput.keyup(function (event) {
+       if (event.keyCode == 13){
+           searchButton.click();
+       }
+    });
+
     searchButton.on("click", function(e){
         e.preventDefault();
         $('#connections-list').find('.connection-row').remove();
