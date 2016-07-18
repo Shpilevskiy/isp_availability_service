@@ -193,18 +193,19 @@ class StreetsResource(object):
         # and headers below must be removed
         resp.set_headers({"Access-Control-Allow-Origin": "*"})
         city_query = req.get_param('city')
-        street_query = req.get_param('street_query')
+        street_query = req.get_param('street')
 
-        self.logger.warn("city_query: {}, street_query: {}".format(city_query, street_query))
+        self.logger.debug("city_query: {}, street_query: {}".format(city_query, street_query))
 
         if not street_query:
+            self.logger.debug("Empty street query supplied.")
             err = {"streets": []}
             resp.body = json.dumps(err)
             resp.status = falcon.HTTP_200
             return
 
         if not city_query:
-            self.logger.warn("Empty city supplied")
+            self.logger.debug("Empty city query supplied")
             err = {"message": "Empty city supplied"}
             resp.body = json.dumps(err)
             resp.status = falcon.HTTP_200
@@ -228,7 +229,7 @@ class StreetsResource(object):
                                   city_name=city_query,
                                   street_name="%{}%".format(street_query))
             streets = [r[0] for r in result]
-        self.logger.warn("Streets: {}".format(streets))
+        self.logger.debug("Streets: {}".format(streets))
         response = {'city': city_query,
                     'items_count': len(streets),
                     'streets': streets}
