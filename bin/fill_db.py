@@ -17,6 +17,7 @@ from by_isp_coverage.validators import ConnectionValidator
 from create_db_tables import fill_provider_data, create_model_tables
 from db import engine, session
 from utils import call_db_filling
+from models import Base
 
 logger = logging.getLogger('utils.fill_db')
 
@@ -47,9 +48,8 @@ def main():
                 msg = "Unknown provider {}, skipping..."
                 logger.warn(msg.format(p_name))
     if args.drop_db:
-        # logger.warn("Dropping all databases.")
-        # TODO: add logics to drop all existing tables
-        pass
+        logger.warn("Dropping all databases.")
+        Base.metadata.drop_all(engine)
 
     create_model_tables(engine)
     fill_provider_data(session)
