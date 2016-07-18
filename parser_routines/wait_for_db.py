@@ -10,6 +10,8 @@ import logging
 
 import psycopg2
 
+from db import POSTGRES_HOST, POSTGRES_DATABASE, POSTGRES_USER
+
 NUMBER_OF_ATTEMPTS = 5
 INITIAL_SLEEP_DELAY = 1
 
@@ -23,10 +25,9 @@ logger = logging.getLogger("parser_routines.wait_for_db")
 
 while attempts_made < NUMBER_OF_ATTEMPTS:
     try:
-        # TODO: read credentials from environment variables
-        psycopg2.connect(host="db",
-                         database="postgres",
-                         user="postgres")
+        psycopg2.connect(host=POSTGRES_HOST,
+                         database=POSTGRES_DATABASE,
+                         user=POSTGRES_USER)
         logger.warn("Connection succeeded.")
         sys.exit(0)
     except Exception as e:
