@@ -16,6 +16,7 @@ var render_row = function(city, street, house, provider, provider_url, status){
 /** This function analyses whether the valid key
      *  (alpha numerical characters, backspace, delete keys)
      *  has been pressed . */
+
     var isValidInputKey = function (char_code) {
         var C_FULL_STOP = 46;
         var C_LATIN_CAPITAL_LETTER_Z = 90;
@@ -27,74 +28,20 @@ var render_row = function(city, street, house, provider, provider_url, status){
         return true;
     };
 
-$(document).ready(function($){
     var cityInput = $('#city-input');
     var streetInput = $('#street-input');
-
-    var cityDatalist = $('#city-datalist');
-    var streetDatalist = $('#street-datalist');
 
     var searchButton = $('#search-sumbit');
     var connectionsList = $('#connections-list');
 
-    cityInput.on("keyup", function(e){
-        // process alphanumerical characters only  
-         if (!isValidInputKey(e.which)){
-            return;
-        }
-       
-        var ajax_url = '/api/cities?q=' + $(this).val();
-        $.ajax(ajax_url,
-            {
-                crossDomain: true,
-                success: function(result){
-                    cityDatalist.empty();
-                    result.cities.forEach(function(item, i, arr){
-                        newOption = $('<option value=' + item + '>');
-                        cityDatalist.append(newOption);
-                    });
-                }
-            }
-        );
-    });
-
-    streetInput.on("keyup", function(e){
-        // process alphanumerical characters only  
-         if (!isValidInputKey(e.which)){
-            return;
-        }
-        street = streetInput.val();
-        city = cityInput.val();
-
-        if (street.length < 3){
-            // Avoid too short search queries
-            return;
-        }
-
-        var ajax_url = '/api/streets?city=' + city + '&street_query=' + street;
-        $.ajax(ajax_url,
-            {
-                crossDomain: true,
-                success: function(result){
-                    streetDatalist.empty();
-                    result.streets.forEach(function(item, i, arr){
-                        newOption = $('<option>', {
-                            value: item.toString(),
-                            text: item.toString(),
-                        });
-                        streetDatalist.append(newOption);
-                    });
-                }
-            }
-        );
-    });
+$(document).ready(function($){
 
     searchButton.on("click", function(e){
         e.preventDefault();
-        $('#connections-list .connection-row').remove();
-    
-        street = streetInput.val();
-        city = cityInput.val();
+        $('#connections-list').find('.connection-row').remove();
+
+        var street = streetInput.val();
+        var city = cityInput.val();
         var ajax_url = '/api/search?city=' + city + '&street=' + street;
         $.ajax(ajax_url,
             {
@@ -112,4 +59,56 @@ $(document).ready(function($){
 
     });
 
+});
+
+
+streetInput.typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1  //set minimal query length
+},
+{
+  name: 'streets',
+  limit: 100,
+  source: function (query, p, process) {
+        var city = cityInput.val();
+        console.log(query, city);
+        var ajax_url = '/api/streets?city=' + city + '&street_query=' + query;
+        return $.get(ajax_url, function (data) {
+            console.log(data.streets);
+            return process(data.streets);
+        });
+  },
+  templates: {
+    empty: [
+      '<div class="empty-message">',
+        'К сожалению, не удается найти данную улицу, пожалуйста, проверьте, правильно ли введен город',
+      '</div>'
+    ].join('\n')
+  }
+});
+
+
+cityInput.typeahead({
+  hint: true,
+  highlight: true
+},
+{
+  name: 'streets',
+  limit: 100,
+  source: function (query, p, process) {
+        console.log(query);
+        var ajax_url = '/api/cities?q=' + query;
+        return $.get(ajax_url, function (data) {
+            console.log(data.cities);
+            return process(data.cities);
+        });
+  },
+  templates: {
+    empty: [
+      '<div class="empty-message">',
+        'К сожалению, у нас нет такого города, пожалуйста, попробуйте проверить правильность написания =(',
+      '</div>'
+    ].join('\n')
+  }
 });

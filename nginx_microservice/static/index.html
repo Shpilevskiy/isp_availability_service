@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="/static/vendor/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="stylesheet" href="/static/css/typehead.css" />
 
 </head>
 <body>
@@ -16,18 +17,15 @@
          <div class="row">
         <form role="form">
             <!-- City selector -->
-            <div class="col-md-3 col-lg-3 col-xs-4">
+            <div class="col-md-3 col-lg-3 col-xs-4 scrollable-dropdown-menu">
                 <input type="text" class="form-control input-lg" list="city-datalist" id="city-input" placeholder="Город">
                 <datalist id="city-datalist"></datalist>
             </div>
             <!-- Street selector -->
-            <div class="col-md-8 col-lg-8 col-xs-7 input-group ">
-                <span class="input-group-btn">
-                    <input type="text" class="form-control input-lg" list="street-datalist" id="street-input" placeholder="Улица">
-                    <datalist id="street-datalist"></datalist>
-                    <button class="btn btn-default input-lg" id="search-sumbit" type="button">Go!</button>
-                </span>
+            <div class="col-md-8 col-lg-8 col-xs-6 scrollable-dropdown-menu">
+              <input class="form-control input-lg" type="text" id="street-input" placeholder="Улица">
             </div>
+             <button class="btn btn-default input-lg" id="search-sumbit" type="button">Go!</button>
         </form>
         </div>
 
@@ -58,9 +56,15 @@
         <td>{{ status }}</td>
     </tr>
     </script>
+
     <script type="text/javascript" src="/static/vendor/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/static/vendor/mustache.js/mustache.min.js"></script>
+
+
+    <script type="text/javascript" src="/static/vendor/typeahead.js/dist/typeahead.jquery.min.js"></script>
+
+
     <script type="text/javascript" src="/static/js/input_helper.js"></script>
 </body>
 </html>
