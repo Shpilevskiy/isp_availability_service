@@ -3,8 +3,11 @@ var streetInput = $('#street-input');
 
 var searchButton = $('#search-sumbit');
 var tableElement = $('#connections-list');
-var table = tableElement.DataTable();
-
+var table = tableElement.DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Russian.json"
+                }
+            });
 
 
 /** Requests connections data on the supplied streets in the given city
@@ -34,6 +37,9 @@ function renderConnectionsTable(cityName, streetName){
 var fillDataTable = function (data) {
      table.destroy();
      table = tableElement.DataTable({
+         "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Russian.json"
+                },
          data: data.connections,
          columns: [
              {data: "city"},
