@@ -2,14 +2,16 @@ var cityInput = $('#city-input');
 var streetInput = $('#street-input');
 
 var searchButton = $('#search-sumbit');
-var connectionsList = $('#connections-list');
+var tableElement = $('#connections-list');
+var table = tableElement.DataTable();
+
 
 
 /** Requests connections data on the supplied streets in the given city
  * and renders them
  */
 function renderConnectionsTable(cityName, streetName){
-    $('#connections-list').find('.connection-row').remove();
+    tableElement.find('.connection-row').remove();
 
     var ajax_url = buildSearchURL(cityName, streetName);
     $.ajax(ajax_url,
@@ -18,26 +20,61 @@ function renderConnectionsTable(cityName, streetName){
             success: function(result){
                 result.connections.forEach(function(item, i, arr){
                     var newRow = render_row(result.city, result.street, item.house, item.provider, item.url, item.status);
-                    connectionsList.append($(newRow));
+                    tableElement.append($(newRow));
                 });
             },
             error: function(e){
                 console.log(e);
             }
         }
-    );   
+    );
 }
+
+
+var fillDataTable = function (data) {
+     table.destroy();
+     table = tableElement.DataTable({
+         data: data.connections,
+         columns: [
+             {data: "city"},
+             {data: "street"},
+             {data: "house"},
+             {data: "provider"},
+             {data: "status"}
+         ]
+     });
+};
+
+
+var searchRequest = function (ajaxUrl) {
+    $.ajax(ajaxUrl,
+                {
+                    crossDomain: true,
+                    success: function(result){
+                        if (typeof(result.connections) != 'undefined') {
+                           fillDataTable(result);
+                        }
+                    },
+                    error: function(e){
+                        console.log(e);
+                    }
+                }
+            );
+};
+
 
 $(document).ready(function($){
 
     searchButton.on("click", function(e){
         e.preventDefault();
-        renderConnectionsTable(cityInput.val(), streetInput.val());
+        var ajaxUrl = buildSearchURL(cityInput.val(), streetInput.val());
+        searchRequest(ajaxUrl);
     });
 
     streetInput.on("keyup", function(e){
         if (e.which === C_ENTER_KEY){
-            renderConnectionsTable(cityInput.val(), streetInput.val());
+              var ajaxUrl = buildSearchURL(cityInput.val(), streetInput.val());
+              searchRequest(ajaxUrl);
         }
     });
 });
