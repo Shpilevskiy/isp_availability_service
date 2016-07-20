@@ -169,15 +169,15 @@ class SearchResource(object):
                 connection_provider = conn.execute(isp, provider_id=r[1]).first()
                 connection_status = conn.execute(status, status_id=r[2])
                 search_result.append(
-                    {"house": r[6],
+                    {"city": city,
+                     "street": street,
+                     "house": r[6],
                      "provider": connection_provider[0],
                      "provider_url": connection_provider[1],
                      "status": connection_status.first()[0]}
                 )
 
-        json_response = {"city": city,
-                         "street": street,
-                         "connections": search_result}
+        json_response = {"connections": search_result}
         resp.body = json.dumps(json_response)
         resp.status = falcon.HTTP_200
 
